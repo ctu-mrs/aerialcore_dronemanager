@@ -2,10 +2,13 @@
 <package format="2">
 
   <name>drone_manager</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <description>drone manager package</description>
 
   <maintainer email="tomas.baca@fel.cvut.cz">Tomas Baca</maintainer>
+  
+  <author>Tomas Baca</author>
+  <author>Giuseppe Silano</author>
 
   <license>BSD-3-Clause</license>
 
