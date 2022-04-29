@@ -36,6 +36,7 @@ class DroneManager:
         self.is_initialized_ = False
         self.finished_ = False
         self.started_ = False
+        self.following_started_ = False
 
         ## | --------------------- load parameters -------------------- |
 
@@ -83,6 +84,7 @@ class DroneManager:
         ## | --------------------- service servers -------------------- |
 
         self.ss_start_ = rospy.Service('~start_in', TriggerSrv, self.callbackStart)
+        self.ss_start_following_ = rospy.Service('~start_following_in', TriggerSrv, self.callbackStartFollowing)
 
         ## | --------------------- service clients -------------------- |
 
@@ -147,6 +149,26 @@ class DroneManager:
 
 # #} end of callbackStart()
 
+    # #{ callbackStartFollowing()
+
+    def callbackStartFollowing(self, req):
+
+        if not self.is_initialized_:
+            return
+
+        self.following_started_ = True
+
+        rospy.loginfo('following activated')
+
+        response = TriggerSrvResponse()
+
+        response.success = True
+        response.message = "following started"
+
+        return response
+
+# #} end of callbackStart()
+
 ## | ------------------------- timers ------------------------- |
 
     # #{ timerMain()
@@ -176,6 +198,10 @@ class DroneManager:
         self.setTrajectory(self.trajectory_)
 
         self.gotoStart() # The UAV go to the starting point
+
+        if not self.following_started_:
+            rospy.loginfo('waiting for following activation, call the "drone_manager/start_following" service to start')
+            return
 
         while not self.freeToCommand():
             rospy.sleep(0.1)

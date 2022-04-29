@@ -26,6 +26,7 @@
 
       <!-- Services in -->
       <remap from="~start_in" to="~start" />
+      <remap from="~start_following_in" to="~start_following" />
 
       <!-- Services out -->
       <remap from="~land_out" to="uav_manager/land" />
