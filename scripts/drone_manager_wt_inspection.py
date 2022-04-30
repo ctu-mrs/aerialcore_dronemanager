@@ -156,6 +156,10 @@ class DroneManager:
         if not self.is_initialized_:
             return
 
+        if not self.started_:
+            rospy.loginfo('following cannot be activated before activation of dronemanager')
+            return
+
         self.following_started_ = True
 
         rospy.loginfo('following activated')
@@ -167,7 +171,7 @@ class DroneManager:
 
         return response
 
-# #} end of callbackStart()
+# #} end of callbackStartFollowing()
 
 ## | ------------------------- timers ------------------------- |
 
