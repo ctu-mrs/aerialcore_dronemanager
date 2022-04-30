@@ -81,6 +81,8 @@ class DroneManager:
 
                 self.trajectory_.trajectory.points.append(point)
 
+        self.expected_following_time_ = len(self.trajectory_.trajectory.points) / self.trajectory_sampling_rate_
+
         ## | --------------------- service servers -------------------- |
 
         self.ss_start_ = rospy.Service('~start_in', TriggerSrv, self.callbackStart)
@@ -201,6 +203,8 @@ class DroneManager:
 
         self.setTrajectory(self.trajectory_)
 
+        rospy.loginfo('Trajectory set. Expected following time = %.2f s', self.expected_following_time_)
+
         self.gotoStart() # The UAV go to the starting point
 
         if not self.following_started_:
@@ -211,11 +215,13 @@ class DroneManager:
             rospy.sleep(0.1)
             rospy.loginfo('waiting for the UAV to stop')
 
-        self.startTrajectoryTracking() # The UAV start tracking the trajectory
 
-        while not self.freeToCommand():
+        self.startTrajectoryTracking() # The UAV start tracking the trajectory
+        time_trajectory_start = rospy.Time.now()
+
+        while not self.freeToCommand() or (rospy.Time.now() - time_trajectory_start).to_sec() < self.expected_following_time_:
             rospy.sleep(0.1)
-            rospy.loginfo('waiting for the UAV to stop')
+            rospy.loginfo('waiting for the UAV to stop, expected time to trajectory end = %2f', self.expected_following_time_ - (rospy.Time.now() - time_trajectory_start).to_sec())
 
         self.land() # The UAV reached the first refilling station. The UAV can land
 
