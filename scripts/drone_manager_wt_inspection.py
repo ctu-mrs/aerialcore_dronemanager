@@ -252,9 +252,9 @@ class DroneManager:
 
         land = TriggerSrvRequest()
 
-        rospy.loginfo('calling for landing')
+        rospy.loginfo('Landing requested')
 
-        resp = self.sc_land_.call(land)
+        # resp = self.sc_land_.call(land)
 
         # TODO: check the return code and decide what to do if it fails
 
